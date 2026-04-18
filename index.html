@@ -1,0 +1,685 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg: #FAFAF8; --bg2: #F1F0EC; --bg3: #E8E7E2;
+  --tx: #1A1A18; --tx2: #5F5E5A; --tx3: #8A8984;
+  --bd: #D3D1C7; --bd2: #B4B2A9;
+  --coral: #D85A30; --coral-bg: #FAECE7; --coral-tx: #712B13;
+  --teal: #1D9E75; --teal-bg: #E1F5EE; --teal-tx: #085041;
+  --purple: #534AB7; --purple-bg: #EEEDFE; --purple-tx: #3C3489;
+  --amber: #EF9F27; --amber-bg: #FAEEDA; --amber-tx: #633806;
+  --green: #639922; --green-bg: #EAF3DE; --green-tx: #27500A;
+  --pink: #D4537E; --pink-bg: #FBEAF0; --pink-tx: #72243E;
+  --gray-dot: #888780; --gray-bg: #F1EFE8; --gray-tx: #444441;
+  --radius: 10px;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'DM Sans', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1A1A18; --bg2: #2C2C2A; --bg3: #3D3D3A;
+    --tx: #E8E7E2; --tx2: #B4B2A9; --tx3: #8A8984;
+    --bd: #444441; --bd2: #5F5E5A;
+    --coral-bg: #3A1A0D; --coral-tx: #F0997B;
+    --teal-bg: #04251C; --teal-tx: #5DCAA5;
+    --purple-bg: #1E1A3E; --purple-tx: #AFA9EC;
+    --amber-bg: #2E1A04; --amber-tx: #FAC775;
+    --green-bg: #132604; --green-tx: #97C459;
+    --pink-bg: #351018; --pink-tx: #ED93B1;
+    --gray-bg: #2C2C2A; --gray-tx: #D3D1C7;
+  }
+}
+body { background: var(--bg); color: var(--tx); font-family: var(--sans); line-height: 1.6; }
+
+.container { max-width: 880px; margin: 0 auto; padding: 24px 16px; }
+
+.intro { font-size: 14px; color: var(--tx2); margin-bottom: 20px; line-height: 1.7; }
+
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+.tab {
+  padding: 7px 14px; border-radius: 20px; font-size: 13px;
+  font-family: var(--sans); cursor: pointer; transition: all 0.15s;
+  border: 1px solid var(--bd); background: transparent; color: var(--tx2);
+  white-space: nowrap;
+}
+.tab:hover { border-color: var(--bd2); background: var(--bg2); }
+.tab.active { font-weight: 500; }
+.tab[data-cat="HELPER"].active       { background: var(--gray-bg);   color: var(--gray-tx);   border-color: var(--gray-dot); }
+.tab[data-cat="STOCK OUT"].active    { background: var(--coral-bg);  color: var(--coral-tx);  border-color: var(--coral); }
+.tab[data-cat="STOCK IN"].active     { background: var(--teal-bg);   color: var(--teal-tx);   border-color: var(--teal); }
+.tab[data-cat="ADJUSTMENT"].active   { background: var(--amber-bg);  color: var(--amber-tx);  border-color: var(--amber); }
+.tab[data-cat="TRANSFER"].active     { background: var(--green-bg);  color: var(--green-tx);  border-color: var(--green); }
+.tab[data-cat="RETUR"].active        { background: var(--pink-bg);   color: var(--pink-tx);   border-color: var(--pink); }
+
+.card { border: 1px solid var(--bd); border-radius: var(--radius); overflow: hidden; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+.card-header { padding: 18px 22px; border-bottom: 1px solid var(--bd); }
+.badge {
+  display: inline-block; font-size: 11px; padding: 2px 10px; border-radius: 10px;
+  color: #fff; font-weight: 500; margin-bottom: 8px;
+}
+.badge[data-cat="HELPER"]     { background: var(--gray-dot); }
+.badge[data-cat="STOCK OUT"]  { background: var(--coral); }
+.badge[data-cat="STOCK IN"]   { background: var(--teal); }
+.badge[data-cat="ADJUSTMENT"] { background: var(--amber); }
+.badge[data-cat="TRANSFER"]   { background: var(--green); }
+.badge[data-cat="RETUR"]      { background: var(--pink); }
+
+.card-title { font-size: 17px; font-weight: 600; margin-bottom: 8px; color: var(--tx); }
+.card-desc { font-size: 13px; color: var(--tx2); line-height: 1.6; margin-bottom: 12px; }
+.table-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.table-tag {
+  font-size: 11px; padding: 2px 7px; border-radius: 4px;
+  font-family: var(--mono); background: var(--bg2); color: var(--tx2);
+  border: 1px solid var(--bd);
+}
+
+.code-block {
+  padding: 22px; overflow-x: auto; background: var(--bg);
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.7;
+  white-space: pre; color: var(--tx);
+}
+.code-block .kw { color: var(--purple); font-weight: 500; }
+.code-block .cm { color: var(--tx3); }
+.code-block .fn { color: var(--teal); }
+.code-block .st { color: var(--coral); }
+.code-block .op { color: var(--amber); font-weight: 500; }
+.code-block .hl { background: var(--amber-bg); display: inline; padding: 1px 4px; border-radius: 3px; }
+
+.legend { margin-top: 28px; padding: 18px 22px; background: var(--bg2); border-radius: var(--radius); }
+.legend-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+.legend-item { font-size: 13px; color: var(--tx2); line-height: 1.8; }
+.legend-item span { font-family: var(--mono); font-size: 12px; padding: 1px 5px; border-radius: 3px; background: var(--bg); border: 1px solid var(--bd); }
+
+@media (max-width: 600px) {
+  .tab { font-size: 12px; padding: 5px 10px; }
+  .code-block { font-size: 11.5px; padding: 14px; }
+}
+</style>
+
+<div class="container">
+  <p class="intro">
+    Referensi pseudocode untuk semua proses posting di sistem warehouse. Klik tab manapun untuk lihat detail — termasuk tabel apa yang di-INSERT, UPDATE, dan bagaimana transaction berjalan.
+  </p>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="content"></div>
+
+  <div class="legend">
+    <div class="legend-title">Cara baca pseudocode ini</div>
+    <div class="legend-item"><span>BEGIN TRANSACTION</span> — semua operasi di dalam blok ini bersifat atomic (semua berhasil atau semua batal)</div>
+    <div class="legend-item"><span>FOR UPDATE</span> — row-level lock, mencegah dua user menulis saldo bersamaan</div>
+    <div class="legend-item"><span>INSERT INTO t_stock_mutation</span> — append only, tidak pernah update/delete</div>
+    <div class="legend-item"><span>UPDATE t_stock_balance</span> — saldo real-time yang selalu di-update setiap ada pergerakan stok</div>
+    <div class="legend-item"><span>ROLLBACK</span> — batalkan semua perubahan jika ada error</div>
+  </div>
+</div>
+
+<script>
+const P = [
+  {
+    id: "docnum", title: "Auto-generate nomor dokumen", cat: "HELPER",
+    desc: "Fungsi reusable yang dipanggil oleh semua proses untuk generate nomor dokumen otomatis dari m_doc_number. Pakai row-level lock (FOR UPDATE) untuk mencegah nomor duplikat saat concurrent request.",
+    tables: ["m_doc_number"],
+    code: [
+      ["kw","function "],["fn","generateDocNumber"],["","(docType) {"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["cm","\n  // Dipanggil oleh SEMUA proses saat buat dokumen baru"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["","\n\n  "],["kw","BEGIN TRANSACTION"],
+      ["","\n\n  "],["cm","// 1. Lock row untuk mencegah race condition"],
+      ["","\n  "],["kw","SELECT "],["","last_number, prefix, format_pattern,"],
+      ["","\n         reset_period, last_reset_date"],
+      ["","\n  "],["kw","FROM "],["","m_doc_number"],
+      ["","\n  "],["kw","WHERE "],["","doc_type = "],["st","':docType'"],
+      ["","\n  "],["op","FOR UPDATE"],["cm","                    // ← row-level lock!"],
+      ["","\n\n  "],["cm","// 2. Cek apakah perlu reset counter"],
+      ["","\n  "],["kw","IF "],["","reset_period == "],["st","'MONTHLY'"],
+      ["","\n     "],["kw","AND "],["","bulan(last_reset_date) != bulan(NOW()):"],
+      ["","\n    "],["kw","SET "],["","last_number = 0"],
+      ["","\n    "],["kw","SET "],["","last_reset_date = NOW()"],
+      ["","\n\n  "],["kw","IF "],["","reset_period == "],["st","'YEARLY'"],
+      ["","\n     "],["kw","AND "],["","tahun(last_reset_date) != tahun(NOW()):"],
+      ["","\n    "],["kw","SET "],["","last_number = 0"],
+      ["","\n    "],["kw","SET "],["","last_reset_date = NOW()"],
+      ["","\n\n  "],["cm","// 3. Increment"],
+      ["","\n  "],["kw","SET "],["","new_number = last_number + 1"],
+      ["","\n\n  "],["cm","// 4. Format: 'PO/{YY}{MM}/{NNNN}' → 'PO/2604/0001'"],
+      ["","\n  "],["kw","SET "],["","doc_number = replace(format_pattern, {"],
+      ["","\n    "],["st","'{YY}'"],["","   → format(NOW(), 'yy'),"],["cm","     // 26"],
+      ["","\n    "],["st","'{MM}'"],["","   → format(NOW(), 'MM'),"],["cm","     // 04"],
+      ["","\n    "],["st","'{NNNN}'"],[""," → padLeft(new_number, 4, '0')"],["cm"," // 0001"],
+      ["","\n  })"],
+      ["","\n\n  "],["cm","// 5. Update counter"],
+      ["","\n  "],["kw","UPDATE "],["","m_doc_number"],
+      ["","\n  "],["kw","SET "],["","last_number = :new_number,"],
+      ["","\n      last_reset_date = :today"],
+      ["","\n  "],["kw","WHERE "],["","doc_type = :docType"],
+      ["","\n\n  "],["kw","COMMIT"],
+      ["","\n  "],["kw","RETURN "],["","doc_number"],
+      ["","\n}"]
+    ]
+  },
+  {
+    id: "issue", title: "Posting material issue (stock out)", cat: "STOCK OUT",
+    desc: "Saat admin gudang posting pengeluaran barang berdasarkan request material dari produksi. Bisa partial — satu request bisa di-issue beberapa kali sampai qty terpenuhi.",
+    tables: ["t_material_issue","t_material_issue_detail","t_stock_mutation","t_stock_balance","t_req_material_detail","t_req_material"],
+    code: [
+      ["kw","function "],["fn","postMaterialIssue"],["","(issueId) {"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["cm","\n  // TRIGGER: Admin gudang klik tombol \"POST\""],
+      ["cm","\n  //          di halaman Material Issue"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["","\n\n  "],["kw","BEGIN TRANSACTION"],
+      ["","\n\n  "],["cm","// 1. Ambil header issue + validasi"],
+      ["","\n  "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_material_issue "],["kw","WHERE "],["","id = :issueId"],
+      ["","\n  "],["kw","IF "],["","issue.status != "],["st","'DRAFT'"],[""," → "],["op","ROLLBACK"],["",", error "],["st","\"Sudah diposting\""],
+      ["","\n\n  "],["cm","// 2. Loop setiap detail item yang dikeluarkan"],
+      ["","\n  "],["kw","FOR EACH "],["","detail "],["kw","IN "],["","t_material_issue_detail"],
+      ["","\n    "],["kw","WHERE "],["","material_issue_id = :issueId:"],
+      ["","\n\n    "],["cm","// 2a. Ambil saldo saat ini"],
+      ["","\n    "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_stock_balance"],
+      ["","\n    "],["kw","WHERE "],["","warehouse_id = :issue.warehouse_id"],
+      ["","\n      "],["kw","AND "],["","material_id  = :detail.material_id"],
+      ["","\n    "],["op","FOR UPDATE"],["cm","                  // ← lock baris saldo"],
+      ["","\n\n    "],["kw","IF "],["","balance.qty_on_hand < detail.qty:"],
+      ["","\n      "],["op","ROLLBACK"],[""," → error "],["st","\"Stok tidak cukup\""],
+      ["","\n\n    "],["cm","// 2b. Hitung saldo baru"],
+      ["","\n    "],["kw","SET "],["","new_on_hand  = balance.qty_on_hand - detail.qty"],
+      ["","\n    "],["kw","SET "],["","new_out      = balance.qty_outstanding_out - detail.qty"],
+      ["","\n    "],["kw","SET "],["","new_available = new_on_hand - new_out"],
+      ["","\n\n    "],["cm","// 2c. Catat mutasi (APPEND ONLY — tidak pernah update!)"],
+      ["","\n    "],["hl","INSERT INTO t_stock_mutation"],[""," ("],
+      ["","\n      mutation_date      = NOW(),"],
+      ["","\n      warehouse_id       = issue.warehouse_id,"],
+      ["","\n      material_id        = detail.material_id,"],
+      ["","\n      transaction_type   = "],["st","'ISSUE_PRODUKSI'"],["",","],
+      ["","\n      reference_type     = "],["st","'t_material_issue'"],["",","],
+      ["","\n      reference_id       = issueId,"],
+      ["","\n      reference_number   = issue.issue_number,"],
+      ["","\n      qty_in             = 0,"],
+      ["","\n      qty_out            = detail.qty,"],
+      ["","\n      unit_cost          = balance.avg_unit_cost,"],["cm","  // ← ambil WAC"],
+      ["","\n      balance_after      = new_on_hand,"],
+      ["","\n      created_by         = current_user"],
+      ["","\n    )"],
+      ["","\n\n    "],["cm","// 2d. Update saldo real-time"],
+      ["","\n    "],["hl","UPDATE t_stock_balance"],[""," "],["kw","SET"],
+      ["","\n      qty_on_hand        = :new_on_hand,"],
+      ["","\n      qty_outstanding_out = :new_out,"],
+      ["","\n      qty_available      = :new_available,"],
+      ["","\n      last_mutation_at   = NOW()"],
+      ["","\n    "],["kw","WHERE "],["","id = :balance.id"],
+      ["","\n\n    "],["cm","// 2e. Update tracking di request material (partial issue)"],
+      ["","\n    "],["kw","IF "],["","detail.req_material_detail_id IS NOT NULL:"],
+      ["","\n      "],["kw","UPDATE "],["","t_req_material_detail "],["kw","SET"],
+      ["","\n        qty_issued = qty_issued + :detail.qty"],
+      ["","\n      "],["kw","WHERE "],["","id = :detail.req_material_detail_id"],
+      ["","\n\n  "],["kw","END FOR"],
+      ["","\n\n  "],["cm","// 3. Update status issue → POSTED"],
+      ["","\n  "],["kw","UPDATE "],["","t_material_issue "],["kw","SET"],
+      ["","\n    status    = "],["st","'POSTED'"],["",","],
+      ["","\n    posted_at = NOW(),"],
+      ["","\n    posted_by = :current_user"],
+      ["","\n  "],["kw","WHERE "],["","id = :issueId"],
+      ["","\n\n  "],["cm","// 4. Update status request material (jika ada link)"],
+      ["","\n  "],["kw","IF "],["","issue.req_material_id IS NOT NULL:"],
+      ["","\n    "],["kw","SELECT "],
+      ["","\n      SUM(qty_approved) AS total_approved,"],
+      ["","\n      SUM(qty_issued)   AS total_issued"],
+      ["","\n    "],["kw","FROM "],["","t_req_material_detail"],
+      ["","\n    "],["kw","WHERE "],["","req_material_id = :issue.req_material_id"],
+      ["","\n\n    "],["kw","IF "],["","total_issued >= total_approved:"],
+      ["","\n      "],["kw","UPDATE "],["","t_req_material "],["kw","SET "],["","status = "],["st","'ISSUED'"],
+      ["","\n    "],["kw","ELSE"],["",":"],
+      ["","\n      "],["kw","UPDATE "],["","t_req_material "],["kw","SET "],["","status = "],["st","'PARTIAL_ISSUED'"],
+      ["","\n\n  "],["kw","COMMIT"],
+      ["","\n  "],["cm","// ✓ Stok berkurang, mutation tercatat, request ter-update"],
+      ["","\n}"]
+    ]
+  },
+  {
+    id: "receive", title: "Posting receive warehouse (stock in)", cat: "STOCK IN",
+    desc: "Proses paling krusial — saat gudang terima barang dari supplier/Jakarta. Di sinilah Weighted Average Cost (WAC) dihitung ulang. Bisa partial receive.",
+    tables: ["t_receive_warehouse","t_receive_warehouse_detail","t_stock_mutation","t_stock_balance","t_purchase_order_detail","t_purchase_order","m_material_supplier"],
+    code: [
+      ["kw","function "],["fn","postReceiveWarehouse"],["","(receiveId) {"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["cm","\n  // TRIGGER: Admin gudang klik \"POST\" setelah input"],
+      ["cm","\n  //          qty_received & qty_rejected"],
+      ["cm","\n  // INI PROSES PALING KRUSIAL — hitung WAC di sini"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["","\n\n  "],["kw","BEGIN TRANSACTION"],
+      ["","\n\n  "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_receive_warehouse "],["kw","WHERE "],["","id = :receiveId"],
+      ["","\n  "],["kw","IF "],["","receive.status != "],["st","'DRAFT'"],[""," → "],["op","ROLLBACK"],
+      ["","\n\n  "],["kw","FOR EACH "],["","detail "],["kw","IN "],["","t_receive_warehouse_detail"],
+      ["","\n    "],["kw","WHERE "],["","receive_warehouse_id = :receiveId:"],
+      ["","\n\n    "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_stock_balance"],
+      ["","\n    "],["kw","WHERE "],["","warehouse_id = :receive.warehouse_id"],
+      ["","\n      "],["kw","AND "],["","material_id  = :detail.material_id"],
+      ["","\n    "],["op","FOR UPDATE"],
+      ["","\n\n    "],["cm","// ─── HITUNG WEIGHTED AVERAGE COST (WAC) ───"],
+      ["","\n    "],["cm","// Rumus:"],
+      ["","\n    "],["cm","//   WAC baru = (stok_lama × WAC_lama + qty_baru × harga_baru)"],
+      ["","\n    "],["cm","//             ÷ (stok_lama + qty_baru)"],
+      ["","\n    "],["cm","//"],
+      ["","\n    "],["cm","// Contoh: stok 100 pcs @ Rp 5.000 = Rp 500.000"],
+      ["","\n    "],["cm","//         terima 50 pcs @ Rp 6.000 = Rp 300.000"],
+      ["","\n    "],["cm","//         WAC = 800.000 ÷ 150 = Rp 5.333,33"],
+      ["","\n\n    "],["kw","SET "],["","old_value   = balance.qty_on_hand * balance.avg_unit_cost"],
+      ["","\n    "],["kw","SET "],["","new_value   = detail.qty_received * detail.unit_price"],
+      ["","\n    "],["kw","SET "],["","new_on_hand = balance.qty_on_hand + detail.qty_received"],
+      ["","\n\n    "],["kw","IF "],["","new_on_hand > 0:"],
+      ["","\n      "],["kw","SET "],["hl","new_wac = (old_value + new_value) / new_on_hand"],
+      ["","\n    "],["kw","ELSE"],["",":"],
+      ["","\n      "],["kw","SET "],["","new_wac = detail.unit_price"],
+      ["","\n\n    "],["kw","SET "],["","new_out_in = balance.qty_outstanding_in - detail.qty_received"],
+      ["","\n\n    "],["cm","// Catat mutasi"],
+      ["","\n    "],["hl","INSERT INTO t_stock_mutation"],[""," ("],
+      ["","\n      mutation_date    = NOW(),"],
+      ["","\n      warehouse_id     = receive.warehouse_id,"],
+      ["","\n      material_id      = detail.material_id,"],
+      ["","\n      transaction_type = "],["st","'RECEIVE_PO'"],["",","],
+      ["","\n      reference_type   = "],["st","'t_receive_warehouse'"],["",","],
+      ["","\n      reference_id     = receiveId,"],
+      ["","\n      reference_number = receive.receive_number,"],
+      ["","\n      qty_in           = detail.qty_received,"],
+      ["","\n      qty_out          = 0,"],
+      ["","\n      unit_cost        = detail.unit_price,"],
+      ["","\n      balance_after    = new_on_hand"],
+      ["","\n    )"],
+      ["","\n\n    "],["cm","// Update saldo + WAC"],
+      ["","\n    "],["hl","UPDATE t_stock_balance"],[""," "],["kw","SET"],
+      ["","\n      qty_on_hand        = :new_on_hand,"],
+      ["","\n      qty_outstanding_in = :new_out_in,"],
+      ["","\n      qty_available      = :new_on_hand - qty_outstanding_out,"],
+      ["","\n      avg_unit_cost      = :new_wac,"],["cm","  // ← WAC baru!"],
+      ["","\n      last_mutation_at   = NOW()"],
+      ["","\n\n    "],["cm","// Update tracking PO (partial receive)"],
+      ["","\n    "],["kw","IF "],["","detail.po_detail_id IS NOT NULL:"],
+      ["","\n      "],["kw","UPDATE "],["","t_purchase_order_detail "],["kw","SET"],
+      ["","\n        qty_received = qty_received + :detail.qty_received"],
+      ["","\n\n    "],["cm","// Update harga terakhir di master supplier"],
+      ["","\n    "],["kw","IF "],["","receive.supplier_id IS NOT NULL:"],
+      ["","\n      "],["kw","UPDATE "],["","m_material_supplier "],["kw","SET"],
+      ["","\n        last_price = :detail.unit_price,"],
+      ["","\n        last_price_date = CURDATE()"],
+      ["","\n\n  "],["kw","END FOR"],
+      ["","\n\n  "],["cm","// Update status receive → POSTED"],
+      ["","\n  "],["kw","UPDATE "],["","t_receive_warehouse "],["kw","SET"],
+      ["","\n    status = "],["st","'POSTED'"],["",", posted_at = NOW(), posted_by = :current_user"],
+      ["","\n\n  "],["cm","// Update status PO"],
+      ["","\n  "],["kw","IF "],["","receive.purchase_order_id IS NOT NULL:"],
+      ["","\n    "],["kw","SELECT "],["","SUM(qty_ordered) AS total_ord, SUM(qty_received) AS total_rcv"],
+      ["","\n    "],["kw","FROM "],["","t_purchase_order_detail "],["kw","WHERE "],["","purchase_order_id = :po_id"],
+      ["","\n\n    "],["kw","IF "],["","total_rcv >= total_ord:"],
+      ["","\n      "],["kw","UPDATE "],["","t_purchase_order "],["kw","SET "],["","status = "],["st","'RECEIVED'"],
+      ["","\n    "],["kw","ELSE"],["",":"],
+      ["","\n      "],["kw","UPDATE "],["","t_purchase_order "],["kw","SET "],["","status = "],["st","'PARTIAL_RECEIVED'"],
+      ["","\n\n  "],["kw","COMMIT"],
+      ["","\n  "],["cm","// ✓ Stok bertambah, WAC ter-update, PO ter-tracking"],
+      ["","\n}"]
+    ]
+  },
+  {
+    id: "retur_prod", title: "Posting retur produksi", cat: "RETUR",
+    desc: "Saat gudang konfirmasi menerima barang retur dari produksi. Barang GOOD masuk stok, barang DAMAGED dicatat tapi tidak menambah stok.",
+    tables: ["t_retur_produksi","t_retur_produksi_detail","t_stock_mutation","t_stock_balance"],
+    code: [
+      ["kw","function "],["fn","postReturProduksi"],["","(returId) {"],
+      ["cm","\n  // ═══════════════════════════════════════════"],
+      ["cm","\n  // TRIGGER: Admin gudang klik \"Terima Retur\""],
+      ["cm","\n  //          setelah status APPROVED"],
+      ["cm","\n  // ═══════════════════════════════════════════"],
+      ["","\n\n  "],["kw","BEGIN TRANSACTION"],
+      ["","\n\n  "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_retur_produksi "],["kw","WHERE "],["","id = :returId"],
+      ["","\n  "],["kw","IF "],["","retur.status != "],["st","'APPROVED'"],[""," → "],["op","ROLLBACK"],
+      ["","\n\n  "],["kw","FOR EACH "],["","detail "],["kw","IN "],["","t_retur_produksi_detail:"],
+      ["","\n\n    "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_stock_balance"],
+      ["","\n    "],["kw","WHERE "],["","warehouse_id = :retur.warehouse_id"],
+      ["","\n      "],["kw","AND "],["","material_id = :detail.material_id"],
+      ["","\n    "],["op","FOR UPDATE"],
+      ["","\n\n    "],["cm","// Barang GOOD → masuk stok penuh"],
+      ["","\n    "],["cm","// Barang DAMAGED → catat tapi tidak tambah stok"],
+      ["","\n    "],["kw","IF "],["","detail.condition_status == "],["st","'GOOD'"],["",":"],
+      ["","\n      "],["kw","SET "],["","qty_masuk = detail.qty"],
+      ["","\n    "],["kw","ELSE"],["",":"],
+      ["","\n      "],["kw","SET "],["","qty_masuk = 0"],["cm","   // rusak, catat saja"],
+      ["","\n\n    "],["kw","SET "],["","new_on_hand = balance.qty_on_hand + qty_masuk"],
+      ["","\n\n    "],["hl","INSERT INTO t_stock_mutation"],[""," ("],
+      ["","\n      transaction_type = "],["st","'RECEIVE_RETUR_PRODUKSI'"],["",","],
+      ["","\n      qty_in           = qty_masuk,"],
+      ["","\n      qty_out          = 0,"],
+      ["","\n      balance_after    = new_on_hand,"],
+      ["","\n      remarks          = "],["kw","CASE "],["","condition_status"],
+      ["","\n                         "],["kw","WHEN "],["st","'DAMAGED'"],[""," "],["kw","THEN "],["st","'Retur rusak, tidak masuk stok'"],
+      ["","\n                         "],["kw","ELSE "],["","NULL "],["kw","END"],
+      ["","\n    )"],
+      ["","\n\n    "],["kw","IF "],["","qty_masuk > 0:"],
+      ["","\n      "],["hl","UPDATE t_stock_balance"],[""," "],["kw","SET"],
+      ["","\n        qty_on_hand   = :new_on_hand,"],
+      ["","\n        qty_available = :new_on_hand - qty_outstanding_out"],
+      ["","\n\n  "],["kw","END FOR"],
+      ["","\n\n  "],["kw","UPDATE "],["","t_retur_produksi "],["kw","SET"],
+      ["","\n    status = "],["st","'RECEIVED'"],["",", received_at = NOW()"],
+      ["","\n\n  "],["kw","COMMIT"],
+      ["","\n}"]
+    ]
+  },
+  {
+    id: "adj", title: "Posting stock adjustment (IN/OUT)", cat: "ADJUSTMENT",
+    desc: "Adjustment manual — bisa IN (hadiah, temuan) atau OUT (hilang, rusak). Juga dipanggil otomatis saat opname selesai di-approve. WAC dihitung ulang saat adjustment IN.",
+    tables: ["t_stock_adjustment","t_stock_adjustment_detail","t_stock_mutation","t_stock_balance","t_stock_opname"],
+    code: [
+      ["kw","function "],["fn","postStockAdjustment"],["","(adjId) {"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["cm","\n  // TRIGGER: Admin gudang klik \"POST\" pada adjustment"],
+      ["cm","\n  //          manual ATAU system auto-call saat opname"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["","\n\n  "],["kw","BEGIN TRANSACTION"],
+      ["","\n\n  "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_stock_adjustment "],["kw","WHERE "],["","id = :adjId"],
+      ["","\n  "],["kw","IF "],["","adj.status != "],["st","'DRAFT'"],[""," → "],["op","ROLLBACK"],
+      ["","\n\n  "],["kw","FOR EACH "],["","detail "],["kw","IN "],["","t_stock_adjustment_detail:"],
+      ["","\n\n    "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_stock_balance "],["op","FOR UPDATE"],
+      ["","\n\n    "],["kw","IF "],["","adj.adjustment_type == "],["st","'IN'"],["",":"],
+      ["","\n      "],["kw","SET "],["","qty_in  = detail.qty"],
+      ["","\n      "],["kw","SET "],["","qty_out = 0"],
+      ["","\n      "],["kw","SET "],["","new_on_hand = balance.qty_on_hand + detail.qty"],
+      ["","\n      "],["kw","SET "],["","mutation_type = "],["kw","CASE "],["","adj.source_type"],
+      ["","\n        "],["kw","WHEN "],["st","'OPNAME'"],[""," "],["kw","THEN "],["st","'OPNAME_IN'"],
+      ["","\n        "],["kw","ELSE "],["st","'ADJUSTMENT_IN'"],[""," "],["kw","END"],
+      ["","\n\n      "],["cm","// Recalculate WAC"],
+      ["","\n      "],["kw","IF "],["","detail.unit_cost > 0 AND new_on_hand > 0:"],
+      ["","\n        "],["kw","SET "],["hl","new_wac = (old_val + detail.qty * unit_cost) / new_on_hand"],
+      ["","\n      "],["kw","ELSE"],["",":"],
+      ["","\n        "],["kw","SET "],["","new_wac = balance.avg_unit_cost"],
+      ["","\n\n    "],["kw","ELSE"],["",":"],["cm","  // adjustment_type == 'OUT'"],
+      ["","\n      "],["kw","SET "],["","qty_in  = 0"],
+      ["","\n      "],["kw","SET "],["","qty_out = detail.qty"],
+      ["","\n      "],["kw","SET "],["","new_on_hand = balance.qty_on_hand - detail.qty"],
+      ["","\n      "],["kw","SET "],["","mutation_type = "],["kw","CASE "],["","adj.source_type"],
+      ["","\n        "],["kw","WHEN "],["st","'OPNAME'"],[""," "],["kw","THEN "],["st","'OPNAME_OUT'"],
+      ["","\n        "],["kw","ELSE "],["st","'ADJUSTMENT_OUT'"],[""," "],["kw","END"],
+      ["","\n      "],["kw","SET "],["","new_wac = balance.avg_unit_cost"],["cm","  // WAC tidak berubah saat keluar"],
+      ["","\n\n      "],["kw","IF "],["","new_on_hand < 0: "],["op","ROLLBACK"],[""," → error "],["st","\"Stok tidak cukup\""],
+      ["","\n\n    "],["hl","INSERT INTO t_stock_mutation"],[""," (...)"],
+      ["","\n    "],["hl","UPDATE t_stock_balance"],[""," "],["kw","SET"],
+      ["","\n      qty_on_hand   = :new_on_hand,"],
+      ["","\n      qty_available = :new_on_hand - qty_outstanding_out,"],
+      ["","\n      avg_unit_cost = :new_wac"],
+      ["","\n\n  "],["kw","END FOR"],
+      ["","\n\n  "],["kw","UPDATE "],["","t_stock_adjustment "],["kw","SET "],["","status = "],["st","'POSTED'"],
+      ["","\n\n  "],["cm","// Jika dari opname, update status opname → ADJUSTED"],
+      ["","\n  "],["kw","IF "],["","adj.source_type == "],["st","'OPNAME'"],["",":"],
+      ["","\n    "],["kw","UPDATE "],["","t_stock_opname "],["kw","SET "],["","status = "],["st","'ADJUSTED'"],["",", adjusted_at = NOW()"],
+      ["","\n\n  "],["kw","COMMIT"],
+      ["","\n}"]
+    ]
+  },
+  {
+    id: "opname", title: "Approve opname → generate adjustment", cat: "ADJUSTMENT",
+    desc: "Saat opname di-approve, sistem auto-generate adjustment dari selisih hitung fisik vs sistem. Pisah jadi adjustment IN (selisih +) dan OUT (selisih -). Stok BELUM berubah sampai adjustment di-POST.",
+    tables: ["t_stock_opname","t_stock_opname_detail","t_stock_adjustment","t_stock_adjustment_detail"],
+    code: [
+      ["kw","function "],["fn","approveOpname"],["","(opnameId) {"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["cm","\n  // TRIGGER: Approver klik \"Approve\" pada opname"],
+      ["cm","\n  // CATATAN: Ini BELUM mengubah stok!"],
+      ["cm","\n  //          Stok berubah saat adjustment di-POST"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["","\n\n  "],["kw","BEGIN TRANSACTION"],
+      ["","\n\n  "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_stock_opname "],["kw","WHERE "],["","id = :opnameId"],
+      ["","\n  "],["kw","IF "],["","opname.status != "],["st","'SUBMITTED'"],[""," → "],["op","ROLLBACK"],
+      ["","\n\n  "],["cm","// 1. Ambil detail yang ada selisih saja"],
+      ["","\n  "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_stock_opname_detail"],
+      ["","\n  "],["kw","WHERE "],["","stock_opname_id = :opnameId "],["kw","AND "],["","qty_variance != 0"],
+      ["","\n\n  "],["kw","IF "],["","count == 0:"],
+      ["","\n    "],["cm","// Tidak ada selisih → langsung ADJUSTED"],
+      ["","\n    "],["kw","UPDATE "],["","t_stock_opname "],["kw","SET "],["","status = "],["st","'ADJUSTED'"],
+      ["","\n    "],["kw","COMMIT"],
+      ["","\n    "],["kw","RETURN"],
+      ["","\n\n  "],["cm","// 2. Pisahkan selisih + dan -"],
+      ["","\n  "],["kw","SET "],["","items_in  = filter(details, d → d.qty_variance > 0)"],
+      ["","\n  "],["kw","SET "],["","items_out = filter(details, d → d.qty_variance < 0)"],
+      ["","\n\n  "],["cm","// 3. Generate adjustment IN (selisih positif: fisik > sistem)"],
+      ["","\n  "],["kw","IF "],["","items_in.length > 0:"],
+      ["","\n    "],["hl","INSERT INTO t_stock_adjustment"],[""," ("],
+      ["","\n      adjustment_type  = "],["st","'IN'"],["",","],
+      ["","\n      source_type      = "],["st","'OPNAME'"],["",","],
+      ["","\n      source_opname_id = opnameId,"],
+      ["","\n      reason           = "],["st","'OPNAME_SELISIH'"],["",","],
+      ["","\n      status           = "],["st","'DRAFT'"],["cm","    // ← masih DRAFT!"],
+      ["","\n    )"],
+      ["","\n    "],["kw","FOR EACH "],["","item "],["kw","IN "],["","items_in:"],
+      ["","\n      "],["kw","INSERT INTO "],["","t_stock_adjustment_detail ("],
+      ["","\n        qty = item.qty_variance"],["cm","  // positif"],
+      ["","\n      )"],
+      ["","\n\n  "],["cm","// 4. Generate adjustment OUT (selisih negatif: fisik < sistem)"],
+      ["","\n  "],["kw","IF "],["","items_out.length > 0:"],
+      ["","\n    "],["hl","INSERT INTO t_stock_adjustment"],[""," ("],
+      ["","\n      adjustment_type  = "],["st","'OUT'"],["",","],
+      ["","\n      source_type      = "],["st","'OPNAME'"],["",","],
+      ["","\n      qty              = ABS(item.qty_variance)"],["cm","  // jadikan positif"],
+      ["","\n      status           = "],["st","'DRAFT'"],
+      ["","\n    )"],
+      ["","\n\n  "],["cm","// 5. Update opname → APPROVED (belum ADJUSTED!)"],
+      ["","\n  "],["kw","UPDATE "],["","t_stock_opname "],["kw","SET"],
+      ["","\n    status      = "],["st","'APPROVED'"],["",","],
+      ["","\n    approved_at = NOW(),"],
+      ["","\n    adjustment_id = :adj_id"],
+      ["","\n\n  "],["kw","COMMIT"],
+      ["","\n\n  "],["cm","// ──────────────────────────────────────────"],
+      ["","\n  "],["cm","// LANGKAH SELANJUTNYA (manual oleh admin):"],
+      ["","\n  "],["cm","//   Admin buka adjustment yang di-generate"],
+      ["","\n  "],["cm","//   → review → klik POST"],
+      ["","\n  "],["cm","//   → panggil postStockAdjustment()"],
+      ["","\n  "],["cm","//   → stok berubah + opname jadi ADJUSTED"],
+      ["","\n  "],["cm","// ──────────────────────────────────────────"],
+      ["","\n}"]
+    ]
+  },
+  {
+    id: "transfer", title: "Posting transfer antar gudang", cat: "TRANSFER",
+    desc: "Dua tahap: SHIP (stok keluar dari gudang asal) dan RECEIVE (stok masuk ke gudang tujuan). qty_received bisa berbeda dari qty_sent jika ada selisih.",
+    tables: ["t_stock_transfer","t_stock_transfer_detail","t_stock_mutation","t_stock_balance"],
+    code: [
+      ["cm","// ═══ TAHAP 1: KIRIM (stok keluar dari gudang asal) ═══"],
+      ["","\n\n"],["kw","function "],["fn","postTransferShip"],["","(transferId) {"],
+      ["","\n\n  "],["kw","BEGIN TRANSACTION"],
+      ["","\n\n  "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_stock_transfer "],["kw","WHERE "],["","id = :transferId"],
+      ["","\n  "],["kw","IF "],["","transfer.status != "],["st","'APPROVED'"],[""," → "],["op","ROLLBACK"],
+      ["","\n\n  "],["kw","FOR EACH "],["","detail "],["kw","IN "],["","t_stock_transfer_detail:"],
+      ["","\n\n    "],["cm","// Gudang ASAL: stok keluar"],
+      ["","\n    "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_stock_balance"],
+      ["","\n    "],["kw","WHERE "],["","warehouse_id = :transfer.from_warehouse_id"],
+      ["","\n      "],["kw","AND "],["","material_id = :detail.material_id"],
+      ["","\n    "],["op","FOR UPDATE"],
+      ["","\n\n    "],["kw","IF "],["","balance.qty_on_hand < detail.qty_sent:"],
+      ["","\n      "],["op","ROLLBACK"],[""," → error "],["st","\"Stok tidak cukup di gudang asal\""],
+      ["","\n\n    "],["hl","INSERT INTO t_stock_mutation"],[""," ("],
+      ["","\n      transaction_type = "],["st","'TRANSFER_OUT'"],["",","],
+      ["","\n      qty_out          = detail.qty_sent,"],
+      ["","\n      unit_cost        = balance.avg_unit_cost"],["cm","  // bawa WAC ke tujuan"],
+      ["","\n    )"],
+      ["","\n\n    "],["hl","UPDATE t_stock_balance"],[""," "],["kw","SET"],
+      ["","\n      qty_on_hand = qty_on_hand - detail.qty_sent"],
+      ["","\n\n    "],["cm","// Simpan unit_cost untuk dipakai saat receive"],
+      ["","\n    "],["kw","UPDATE "],["","t_stock_transfer_detail "],["kw","SET "],["","unit_cost = :balance.avg_unit_cost"],
+      ["","\n\n  "],["kw","END FOR"],
+      ["","\n\n  "],["kw","UPDATE "],["","t_stock_transfer "],["kw","SET "],["","status = "],["st","'IN_TRANSIT'"],["",", shipped_at = NOW()"],
+      ["","\n  "],["kw","COMMIT"],
+      ["","\n}\n\n"],
+      ["cm","// ═══ TAHAP 2: TERIMA (stok masuk ke gudang tujuan) ═══"],
+      ["","\n\n"],["kw","function "],["fn","postTransferReceive"],["","(transferId) {"],
+      ["","\n\n  "],["kw","BEGIN TRANSACTION"],
+      ["","\n\n  "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_stock_transfer "],["kw","WHERE "],["","id = :transferId"],
+      ["","\n  "],["kw","IF "],["","transfer.status != "],["st","'IN_TRANSIT'"],[""," → "],["op","ROLLBACK"],
+      ["","\n\n  "],["kw","FOR EACH "],["","detail "],["kw","IN "],["","t_stock_transfer_detail:"],
+      ["","\n\n    "],["cm","// Gudang TUJUAN: stok masuk"],
+      ["","\n    "],["cm","// Buat balance record jika belum ada"],
+      ["","\n    "],["kw","INSERT INTO "],["","t_stock_balance (warehouse_id, material_id, qty_on_hand = 0)"],
+      ["","\n    "],["kw","ON DUPLICATE KEY UPDATE "],["","warehouse_id = warehouse_id"],["cm","  // do nothing"],
+      ["","\n\n    "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_stock_balance "],["op","FOR UPDATE"],
+      ["","\n\n    "],["cm","// WAC di gudang tujuan"],
+      ["","\n    "],["kw","SET "],["","old_val     = balance.qty_on_hand * balance.avg_unit_cost"],
+      ["","\n    "],["kw","SET "],["","new_val     = detail.qty_received * detail.unit_cost"],
+      ["","\n    "],["kw","SET "],["","new_on_hand = balance.qty_on_hand + detail.qty_received"],
+      ["","\n    "],["kw","SET "],["hl","new_wac     = (old_val + new_val) / new_on_hand"],
+      ["","\n\n    "],["hl","INSERT INTO t_stock_mutation"],[""," ("],
+      ["","\n      transaction_type = "],["st","'TRANSFER_IN'"],["",","],
+      ["","\n      qty_in           = detail.qty_received"],
+      ["","\n    )"],
+      ["","\n\n    "],["hl","UPDATE t_stock_balance"],[""," "],["kw","SET"],
+      ["","\n      qty_on_hand   = :new_on_hand,"],
+      ["","\n      avg_unit_cost = :new_wac"],
+      ["","\n\n    "],["cm","// Jika qty_received < qty_sent → ada selisih"],
+      ["","\n    "],["kw","IF "],["","detail.qty_received < detail.qty_sent:"],
+      ["","\n      "],["kw","SET "],["","selisih = detail.qty_sent - detail.qty_received"],
+      ["","\n      "],["cm","// Bisa auto-generate adjustment di gudang asal"],
+      ["","\n\n  "],["kw","END FOR"],
+      ["","\n\n  "],["kw","UPDATE "],["","t_stock_transfer "],["kw","SET "],["","status = "],["st","'RECEIVED'"],
+      ["","\n  "],["kw","COMMIT"],
+      ["","\n}"]
+    ]
+  },
+  {
+    id: "retur_pur", title: "Posting retur purchase (ke supplier)", cat: "RETUR",
+    desc: "Kirim barang rusak kembali ke supplier. Stok berkurang saat retur dikirim. Auto-generate Surat Jalan OUT. Replacement masuk lewat proses receive biasa.",
+    tables: ["t_retur_purchase","t_retur_purchase_detail","t_surat_jalan","t_surat_jalan_detail","t_stock_mutation","t_stock_balance","t_purchase_order_detail"],
+    code: [
+      ["kw","function "],["fn","postReturPurchaseSend"],["","(returId) {"],
+      ["cm","\n  // ═══════════════════════════════════════════"],
+      ["cm","\n  // TRIGGER: Purchase klik \"Kirim Retur\""],
+      ["cm","\n  // EFEK: Barang keluar gudang → ke supplier"],
+      ["cm","\n  // ═══════════════════════════════════════════"],
+      ["","\n\n  "],["kw","BEGIN TRANSACTION"],
+      ["","\n\n  "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_retur_purchase "],["kw","WHERE "],["","id = :returId"],
+      ["","\n  "],["kw","IF "],["","retur.status != "],["st","'APPROVED'"],[""," → "],["op","ROLLBACK"],
+      ["","\n\n  "],["cm","// 1. Auto-generate Surat Jalan OUT"],
+      ["","\n  "],["kw","SET "],["","sj_number = generateDocNumber("],["st","'SJ'"],["",")"],
+      ["","\n  "],["hl","INSERT INTO t_surat_jalan"],[""," ("],
+      ["","\n    sj_number         = :sj_number,"],
+      ["","\n    sj_direction      = "],["st","'OUT'"],["",","],["cm","        // ← keluar"],
+      ["","\n    retur_purchase_id = returId,"],
+      ["","\n    supplier_id      = retur.supplier_id,"],
+      ["","\n    status           = "],["st","'SENT'"],
+      ["","\n  )"],
+      ["","\n\n  "],["kw","FOR EACH "],["","detail "],["kw","IN "],["","t_retur_purchase_detail:"],
+      ["","\n\n    "],["cm","// SJ detail"],
+      ["","\n    "],["kw","INSERT INTO "],["","t_surat_jalan_detail ("],
+      ["","\n      surat_jalan_id = :sjId,"],
+      ["","\n      material_id    = detail.material_id,"],
+      ["","\n      qty            = detail.qty_returned"],
+      ["","\n    )"],
+      ["","\n\n    "],["cm","// Kurangi stok gudang"],
+      ["","\n    "],["kw","SELECT "],["","* "],["kw","FROM "],["","t_stock_balance "],["op","FOR UPDATE"],
+      ["","\n\n    "],["hl","INSERT INTO t_stock_mutation"],[""," ("],
+      ["","\n      transaction_type = "],["st","'ISSUE_RETUR_PURCHASE'"],["",","],
+      ["","\n      qty_out          = detail.qty_returned"],
+      ["","\n    )"],
+      ["","\n\n    "],["hl","UPDATE t_stock_balance"],[""," "],["kw","SET"],
+      ["","\n      qty_on_hand = qty_on_hand - detail.qty_returned"],
+      ["","\n\n    "],["cm","// Update tracking di PO"],
+      ["","\n    "],["kw","IF "],["","detail.po_detail_id IS NOT NULL:"],
+      ["","\n      "],["kw","UPDATE "],["","t_purchase_order_detail "],["kw","SET"],
+      ["","\n        qty_returned = qty_returned + :detail.qty_returned"],
+      ["","\n\n  "],["kw","END FOR"],
+      ["","\n\n  "],["kw","UPDATE "],["","t_retur_purchase "],["kw","SET"],
+      ["","\n    status = "],["st","'SENT'"],["",", sent_at = NOW()"],
+      ["","\n\n  "],["kw","COMMIT"],
+      ["","\n\n  "],["cm","// ──────────────────────────────────────────"],
+      ["","\n  "],["cm","// Saat supplier kirim REPLACEMENT:"],
+      ["","\n  "],["cm","//   Proses via receive biasa"],
+      ["","\n  "],["cm","//   (postReceiveWarehouse)"],
+      ["","\n  "],["cm","//   dengan type = 'RECEIVE_RETUR_REPLACEMENT'"],
+      ["","\n  "],["cm","//   Lalu update:"],
+      ["","\n  "],["cm","//     retur_purchase_detail.qty_replaced += qty"],
+      ["","\n  "],["cm","//     retur_purchase.status → 'REPLACED'"],
+      ["","\n  "],["cm","// ──────────────────────────────────────────"],
+      ["","\n}"]
+    ]
+  },
+  {
+    id: "outstanding", title: "Approve PO & request (outstanding)", cat: "STOCK IN",
+    desc: "Saat PO di-approve → qty_outstanding_in naik (barang sedang dijalan). Saat request material di-approve → qty_outstanding_out naik (ada komitmen untuk dikeluarkan). Ini yang bikin qty_available lebih akurat.",
+    tables: ["t_purchase_order","t_purchase_order_detail","t_req_material","t_req_material_detail","t_stock_balance"],
+    code: [
+      ["kw","function "],["fn","approvePO"],["","(poId) {"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["cm","\n  // TRIGGER: Approver klik \"Approve\" pada PO"],
+      ["cm","\n  // EFEK: qty_outstanding_in bertambah"],
+      ["cm","\n  //       (belum mengubah qty_on_hand!)"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["","\n\n  "],["kw","BEGIN TRANSACTION"],
+      ["","\n\n  "],["kw","FOR EACH "],["","detail "],["kw","IN "],["","t_purchase_order_detail:"],
+      ["","\n\n    "],["cm","// Pastikan ada record balance"],
+      ["","\n    "],["kw","INSERT INTO "],["","t_stock_balance (...) "],["kw","VALUES "],["","(... qty=0 ...)"],
+      ["","\n    "],["kw","ON DUPLICATE KEY UPDATE "],["","warehouse_id = warehouse_id"],
+      ["","\n\n    "],["hl","UPDATE t_stock_balance"],[""," "],["kw","SET"],
+      ["","\n      qty_outstanding_in = qty_outstanding_in + detail.qty_ordered"],
+      ["","\n\n  "],["kw","END FOR"],
+      ["","\n\n  "],["kw","UPDATE "],["","t_purchase_order "],["kw","SET "],["","status = "],["st","'APPROVED'"],
+      ["","\n  "],["kw","COMMIT"],
+      ["","\n\n  "],["cm","// outstanding_in akan BERKURANG saat postReceiveWarehouse()"],
+      ["","\n}\n\n"],
+      ["cm","// ─────────────────────────────────────────────────────────"],
+      ["","\n\n"],
+      ["kw","function "],["fn","approveReqMaterial"],["","(reqId) {"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["cm","\n  // TRIGGER: Admin gudang approve request material"],
+      ["cm","\n  // EFEK: qty_outstanding_out bertambah"],
+      ["cm","\n  //       (ada komitmen untuk dikeluarkan)"],
+      ["cm","\n  // ═══════════════════════════════════════════════════"],
+      ["","\n\n  "],["kw","BEGIN TRANSACTION"],
+      ["","\n\n  "],["kw","FOR EACH "],["","detail "],["kw","IN "],["","t_req_material_detail:"],
+      ["","\n\n    "],["hl","UPDATE t_stock_balance"],[""," "],["kw","SET"],
+      ["","\n      qty_outstanding_out = qty_outstanding_out + detail.qty_approved,"],
+      ["","\n      qty_available = qty_on_hand"],
+      ["","\n                   - (qty_outstanding_out + detail.qty_approved)"],
+      ["","\n\n  "],["kw","END FOR"],
+      ["","\n\n  "],["kw","UPDATE "],["","t_req_material "],["kw","SET "],["","status = "],["st","'APPROVED'"],
+      ["","\n  "],["kw","COMMIT"],
+      ["","\n\n  "],["cm","// outstanding_out akan BERKURANG saat postMaterialIssue()"],
+      ["","\n}"]
+    ]
+  }
+];
+
+function render(id) {
+  const p = P.find(x => x.id === id);
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.id === id));
+  let codeHtml = '';
+  for (const [cls, text] of p.code) {
+    const escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    codeHtml += cls ? `<span class="${cls}">${escaped}</span>` : escaped;
+  }
+  document.getElementById('content').innerHTML = `
+    <div class="card">
+      <div class="card-header" style="background:var(--${p.id === 'docnum' ? 'gray' : {coral:'coral',teal:'teal',purple:'purple',amber:'amber',green:'green',pink:'pink'}[({
+        'STOCK OUT':'coral','STOCK IN':'teal','ADJUSTMENT':'amber','TRANSFER':'green','RETUR':'pink','HELPER':'gray'
+      })[p.cat]]}-bg)">
+        <span class="badge" data-cat="${p.cat}">${p.cat}</span>
+        <div class="card-title">${p.title}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="table-tags">${p.tables.map(t=>`<span class="table-tag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="code-block">${codeHtml}</div>
+    </div>`;
+}
+
+const tabs = document.getElementById('tabs');
+P.forEach(p => {
+  const btn = document.createElement('button');
+  btn.className = 'tab';
+  btn.dataset.id = p.id;
+  btn.dataset.cat = p.cat;
+  btn.textContent = p.title.length > 32 ? p.title.slice(0,30)+'…' : p.title;
+  btn.onclick = () => render(p.id);
+  tabs.appendChild(btn);
+});
+render('docnum');
+</script>
